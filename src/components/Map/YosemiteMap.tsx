@@ -15,7 +15,7 @@ import {
   yosemiteBoundary,
   yosemiteInvertedBoundary,
 } from "@/lib/data/yosemite-boundary";
-import { parkTrails, parkEntrances } from "@/lib/data/park-features";
+import { parkEntrances } from "@/lib/data/park-features";
 import MapPin from "./MapPin";
 import MapFallback from "./MapFallback";
 
@@ -44,23 +44,6 @@ const boundaryLineStyle: LineLayerSpecification = {
     "line-width": 2.5,
     "line-opacity": 0.8,
     "line-dasharray": [4, 2],
-  },
-};
-
-// Trails (dotted line)
-const trailLayerStyle: LineLayerSpecification = {
-  id: "park-trails",
-  type: "line",
-  source: "park-trails-source",
-  layout: {
-    "line-cap": "round",
-    "line-join": "round",
-  },
-  paint: {
-    "line-color": "#b45309",
-    "line-width": 2,
-    "line-opacity": 0.7,
-    "line-dasharray": [2, 2],
   },
 };
 
@@ -123,11 +106,6 @@ export default function YosemiteMap() {
         {/* Park boundary dashed outline */}
         <Source id="park-boundary-source" type="geojson" data={yosemiteBoundary}>
           <Layer {...boundaryLineStyle} />
-        </Source>
-
-        {/* Trails */}
-        <Source id="park-trails-source" type="geojson" data={parkTrails}>
-          <Layer {...trailLayerStyle} />
         </Source>
 
         {/* Entrance gate markers */}
@@ -194,10 +172,6 @@ export default function YosemiteMap() {
       <div className="absolute bottom-8 left-3 z-10 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-lg shadow-lg p-3 text-[10px] space-y-1.5 pointer-events-none">
         <div className="font-semibold text-[11px] text-slate-700 dark:text-slate-200 mb-1">
           Map Legend
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-5 border-t-2 border-dashed border-[#b45309]" />
-          <span className="text-slate-600 dark:text-slate-300">Trail</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-5 border-t-2 border-dashed border-[#2d6a4f]" />
