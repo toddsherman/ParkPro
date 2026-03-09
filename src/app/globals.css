@@ -1,26 +1,252 @@
 @import "tailwindcss";
 
+/* ============================================================
+   ParkPro - Nature-themed Design Tokens
+   ============================================================ */
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Core backgrounds & foregrounds */
+  --background: #f8faf7;
+  --foreground: #1e293b;
+
+  /* Nature palette */
+  --green-50: #f0fdf4;
+  --green-100: #dcfce7;
+  --green-200: #bbf7d0;
+  --green-400: #4ade80;
+  --green-500: #22c55e;
+  --green-600: #16a34a;
+  --green-700: #15803d;
+  --green-800: #166534;
+  --green-900: #14532d;
+
+  /* Earth tones */
+  --brown-50: #fdf8f0;
+  --brown-100: #f5ead6;
+  --brown-200: #e8d5b0;
+  --brown-400: #c4924a;
+  --brown-600: #92400e;
+  --brown-700: #78350f;
+  --brown-800: #5c2d0e;
+
+  /* Slate (UI chrome) */
+  --slate-50: #f8fafc;
+  --slate-100: #f1f5f9;
+  --slate-200: #e2e8f0;
+  --slate-300: #cbd5e1;
+  --slate-400: #94a3b8;
+  --slate-500: #64748b;
+  --slate-600: #475569;
+  --slate-700: #334155;
+  --slate-800: #1e293b;
+  --slate-900: #0f172a;
+  --slate-950: #020617;
+
+  /* Panel */
+  --panel-bg: rgba(255, 255, 255, 0.95);
+  --panel-border: rgba(0, 0, 0, 0.08);
+
+  /* Accent */
+  --accent: var(--green-600);
+  --accent-hover: var(--green-700);
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -2px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1),
+    0 4px 6px -4px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1),
+    0 8px 10px -6px rgba(0, 0, 0, 0.1);
 }
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #0c1210;
+    --foreground: #e2e8f0;
+
+    --panel-bg: rgba(15, 23, 42, 0.95);
+    --panel-border: rgba(255, 255, 255, 0.08);
+
+    --accent: var(--green-500);
+    --accent-hover: var(--green-400);
+
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4),
+      0 2px 4px -2px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4),
+      0 4px 6px -4px rgba(0, 0, 0, 0.3);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5),
+      0 8px 10px -6px rgba(0, 0, 0, 0.4);
+  }
+}
+
+/* ============================================================
+   Tailwind Theme Integration
+   ============================================================ */
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
+  --color-panel-bg: var(--panel-bg);
+  --color-panel-border: var(--panel-border);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* ============================================================
+   Base Styles
+   ============================================================ */
+
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ============================================================
+   Mapbox GL Styles
+   ============================================================ */
+
+.mapboxgl-map {
+  width: 100%;
+  height: 100%;
+}
+
+.mapboxgl-ctrl-bottom-left,
+.mapboxgl-ctrl-bottom-right {
+  z-index: 1;
+}
+
+.mapboxgl-popup-content {
+  padding: 0 !important;
+  border-radius: 12px !important;
+  box-shadow: var(--shadow-lg) !important;
+  overflow: hidden;
+}
+
+.mapboxgl-popup-close-button {
+  font-size: 18px;
+  padding: 4px 8px;
+  color: var(--slate-500);
+}
+
+.mapboxgl-popup-close-button:hover {
+  color: var(--foreground);
+  background: transparent;
+}
+
+/* ============================================================
+   Custom Scrollbar
+   ============================================================ */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--green-600) transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: var(--green-600);
+  border-radius: 3px;
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: var(--green-700);
+}
+
+/* ============================================================
+   Animation Keyframes
+   ============================================================ */
+
+@keyframes slide-in-right {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slide-up {
+  from {
+    transform: translateY(20px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes spin-slow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes pulse-gentle {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
+}
+
+/* ============================================================
+   Utility Animation Classes
+   ============================================================ */
+
+.panel-slide-right {
+  animation: slide-in-right 0.3s ease-out forwards;
+}
+
+.panel-slide-up {
+  animation: slide-up 0.3s ease-out forwards;
+}
+
+.fade-in {
+  animation: fade-in 0.3s ease-out forwards;
+}
+
+.spin-slow {
+  animation: spin-slow 1.2s linear infinite;
+}
+
+.pulse-gentle {
+  animation: pulse-gentle 2s ease-in-out infinite;
 }
