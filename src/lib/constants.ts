@@ -267,24 +267,52 @@ export const MONTHLY_CLIMATE: Record<
   12: { highF: 48, lowF: 26, conditions: ["Snow", "Cloudy", "Rain", "Partly Cloudy"], precipChance: 45 },
 };
 
+// ---------------------------------------------------------------------------
+// NPS Entrance Traffic Counts (vehicles/year, 2024)
+// Source: NPS IRMA Stats – Traffic Counts by Location
+//        https://irma.nps.gov/Stats/SSRSReports/Park%20Specific%20Reports/Traffic%20Counts?Park=YOSE
+// These map entrance gates to park zones and ground our zone popularity.
+// ---------------------------------------------------------------------------
+
+export const NPS_ENTRANCE_TRAFFIC: Record<string, { vehicles2024: number; pctOfPark: number }> = {
+  "south-entrance": { vehicles2024: 550763, pctOfPark: 25.9 },    // Hwy 41 → Wawona, Mariposa Grove, Valley
+  "arch-rock": { vehicles2024: 446036, pctOfPark: 21.0 },         // Hwy 140 → Valley (most direct)
+  "big-oak-flat": { vehicles2024: 396350, pctOfPark: 18.6 },      // Hwy 120W → Valley (from SF/Bay Area)
+  "big-tree": { vehicles2024: 257280, pctOfPark: 12.1 },          // Mariposa Grove shuttle/parking
+  "badger-pass": { vehicles2024: 249522, pctOfPark: 11.7 },       // Glacier Point Road
+  "tioga-pass": { vehicles2024: 187362, pctOfPark: 8.8 },         // Hwy 120E → Tuolumne Meadows
+  "hetch-hetchy": { vehicles2024: 38238, pctOfPark: 1.8 },        // Hetch Hetchy Road (most remote)
+};
+
 // Zone-specific busyness multipliers (relative crowding factor, 1.0 = average)
-// Calibrated from NPS Visitor Studies:
-//   - Summer 2009 study: 70% of visitor groups visited Yosemite Valley
-//   - Winter 2008 study: Valley 59%, Glacier Pt 55%, Wawona 43%,
-//     Mariposa Grove 19%, High Sierra 11%, Tuolumne 7%, Hetch Hetchy 5%
+//
+// Calibrated from three NPS data sources:
+//
+// 1. Entrance traffic counts (2024, irma.nps.gov/Stats):
+//    Valley entrances (Arch Rock 21% + Big Oak Flat 18.6% + part of South 25.9%)
+//    receive ~65% of total park traffic. Hetch Hetchy gets only 1.8%.
+//
+// 2. NPS Visitor Studies:
+//    Summer 2009: 70% of visitor groups visited Yosemite Valley
+//    Winter 2008: Valley 59%, Glacier Pt 55%, Wawona 43%,
+//                 Mariposa Grove 19%, Tuolumne 7%, Hetch Hetchy 5%
+//
+// 3. NPS Traffic page (nps.gov/yose/planyourvisit/traffic.htm):
+//    South Entrance: 1-2 hour delays; other entrances: ~30 min
+//
 // Sources:
+//   https://irma.nps.gov/Stats/SSRSReports/Park%20Specific%20Reports/Traffic%20Counts?Park=YOSE
 //   https://www.nps.gov/yose/learn/nature/upload/Visitor-Use-Summer-2009-Study.pdf
 //   https://www.nps.gov/yose/learn/nature/upload/vswinter2008.pdf
-//   https://www.nps.gov/yose/planyourvisit/traffic.htm (entrance delays)
 export const ZONE_POPULARITY: Record<string, number> = {
-  "yosemite-valley": 1.5, // ~70% of summer visitors; South Entrance 2hr waits
-  "bridalveil-fall": 1.4, // Valley entrance attraction; first stop for most visitors
-  "half-dome-village": 1.4, // Major Valley hub; Mist Trail/Half Dome access
-  "glacier-point": 1.3, // 55% in winter; summer road access makes it very popular
-  "el-capitan": 1.1, // Valley viewpoint; popular but spread-out viewing area
-  "mariposa-grove": 1.0, // ~19–30% of visitors; shuttle system manages flow
-  "tuolumne-meadows": 0.8, // ~7% winter (closed), ~15–20% summer; seasonal access
-  "wawona": 0.7, // ~43% in winter (base camp), ~15–20% summer
-  "tioga-pass": 0.5, // Remote eastern entrance; seasonal closure Nov–May
-  "hetch-hetchy": 0.4, // ~5% of visitors; most remote, limited hours
+  "yosemite-valley": 1.5, // ~70% of visitor groups; 3 entrances funnel here (65% of traffic)
+  "bridalveil-fall": 1.4, // First Valley attraction from South Entrance; very high foot traffic
+  "half-dome-village": 1.4, // Major Valley hub; Mist Trail/Half Dome trailhead
+  "glacier-point": 1.2, // Badger Pass traffic: 11.7% of park; seasonal road closure
+  "el-capitan": 1.1, // Valley viewpoint; 21% Arch Rock + 18.6% Big Oak Flat pass by
+  "mariposa-grove": 1.1, // Big Tree counter: 12.1% of park traffic; shuttle manages flow
+  "tuolumne-meadows": 0.7, // Tioga Pass: 8.8% of park traffic; closed ~6 months/year
+  "wawona": 0.7, // South Entrance pass-through; 43% visited in winter study
+  "tioga-pass": 0.5, // Eastern entrance: 8.8% of traffic; seasonal closure Nov–May
+  "hetch-hetchy": 0.4, // Only 1.8% of park traffic (38k vehicles vs 550k at South)
 };
