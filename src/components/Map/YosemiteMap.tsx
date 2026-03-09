@@ -5,7 +5,6 @@ import Map, { MapMouseEvent, Source, Layer, Marker } from "react-map-gl/mapbox";
 import type {
   FillLayerSpecification,
   LineLayerSpecification,
-  FilterSpecification,
 } from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 
@@ -16,7 +15,7 @@ import {
   yosemiteBoundary,
   yosemiteInvertedBoundary,
 } from "@/lib/data/yosemite-boundary";
-import { parkRoads, parkTrails, parkEntrances } from "@/lib/data/park-features";
+import { parkTrails, parkEntrances } from "@/lib/data/park-features";
 import MapPin from "./MapPin";
 import MapFallback from "./MapFallback";
 
@@ -45,73 +44,6 @@ const boundaryLineStyle: LineLayerSpecification = {
     "line-width": 2.5,
     "line-opacity": 0.8,
     "line-dasharray": [4, 2],
-  },
-};
-
-// Highways (thick solid line)
-const highwayLayerStyle: LineLayerSpecification = {
-  id: "park-highways",
-  type: "line",
-  source: "park-roads-source",
-  filter: ["==", ["get", "type"], "highway"] as unknown as FilterSpecification,
-  layout: {
-    "line-cap": "round",
-    "line-join": "round",
-  },
-  paint: {
-    "line-color": "#f5f0e8",
-    "line-width": 4,
-    "line-opacity": 0.95,
-  },
-};
-
-// Highway casing (dark outline around highways)
-const highwayCasingStyle: LineLayerSpecification = {
-  id: "park-highways-casing",
-  type: "line",
-  source: "park-roads-source",
-  filter: ["==", ["get", "type"], "highway"] as unknown as FilterSpecification,
-  layout: {
-    "line-cap": "round",
-    "line-join": "round",
-  },
-  paint: {
-    "line-color": "#9c8b72",
-    "line-width": 6,
-    "line-opacity": 0.7,
-  },
-};
-
-// Secondary roads (thinner)
-const secondaryRoadStyle: LineLayerSpecification = {
-  id: "park-secondary-roads",
-  type: "line",
-  source: "park-roads-source",
-  filter: ["==", ["get", "type"], "secondary"] as unknown as FilterSpecification,
-  layout: {
-    "line-cap": "round",
-    "line-join": "round",
-  },
-  paint: {
-    "line-color": "#f5f0e8",
-    "line-width": 2.5,
-    "line-opacity": 0.9,
-  },
-};
-
-const secondaryRoadCasingStyle: LineLayerSpecification = {
-  id: "park-secondary-roads-casing",
-  type: "line",
-  source: "park-roads-source",
-  filter: ["==", ["get", "type"], "secondary"] as unknown as FilterSpecification,
-  layout: {
-    "line-cap": "round",
-    "line-join": "round",
-  },
-  paint: {
-    "line-color": "#a89880",
-    "line-width": 4,
-    "line-opacity": 0.5,
   },
 };
 
@@ -193,14 +125,6 @@ export default function YosemiteMap() {
           <Layer {...boundaryLineStyle} />
         </Source>
 
-        {/* Road casings (rendered first so the fill sits on top) */}
-        <Source id="park-roads-source" type="geojson" data={parkRoads}>
-          <Layer {...highwayCasingStyle} />
-          <Layer {...secondaryRoadCasingStyle} />
-          <Layer {...highwayLayerStyle} />
-          <Layer {...secondaryRoadStyle} />
-        </Source>
-
         {/* Trails */}
         <Source id="park-trails-source" type="geojson" data={parkTrails}>
           <Layer {...trailLayerStyle} />
@@ -270,14 +194,6 @@ export default function YosemiteMap() {
       <div className="absolute bottom-8 left-3 z-10 bg-white/90 dark:bg-slate-800/90 backdrop-blur-sm rounded-lg shadow-lg p-3 text-[10px] space-y-1.5 pointer-events-none">
         <div className="font-semibold text-[11px] text-slate-700 dark:text-slate-200 mb-1">
           Map Legend
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-5 h-[3px] bg-[#f5f0e8] border border-[#9c8b72] rounded-full" />
-          <span className="text-slate-600 dark:text-slate-300">Highway</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <div className="w-5 h-[2px] bg-[#f5f0e8] border border-[#a89880] rounded-full" />
-          <span className="text-slate-600 dark:text-slate-300">Secondary Road</span>
         </div>
         <div className="flex items-center gap-2">
           <div className="w-5 border-t-2 border-dashed border-[#b45309]" />
