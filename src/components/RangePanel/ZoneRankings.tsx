@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { BarChart2 } from "lucide-react";
 import { DateRange, YearScoreData } from "@/lib/types";
 import { getDatesBetween } from "@/lib/utils/dates";
@@ -102,7 +102,7 @@ export default function ZoneRankings({
             <span className="text-sm font-medium text-slate-800 dark:text-slate-200 min-w-0 truncate w-36 shrink-0">
               {zone.name}
               {zone.roadClosed && (
-                <span className="ml-1.5 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-amber-100 dark:bg-amber-900/40 text-amber-700 dark:text-amber-400 align-middle" title="Access road typically closed during selected dates">
+                <span className="ml-1.5 inline-flex items-center px-1.5 py-0.5 rounded text-[10px] font-medium bg-sky-100 dark:bg-sky-900/40 text-sky-700 dark:text-sky-400 align-middle" title="Access road typically closed during selected dates">
                   Road closed
                 </span>
               )}

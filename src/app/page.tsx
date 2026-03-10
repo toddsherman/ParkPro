@@ -145,7 +145,6 @@ export default function Home() {
               selectedRange={selectedRange}
               yearScores={yearScores}
               weather={rangeWeather}
-              campsites={rangeCampsites}
               onClose={() => setRange(null)}
             />
           )}

@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+
 import { AlertTriangle, Info, XCircle, X } from "lucide-react";
 import { useApp } from "@/lib/context";
 import { ParkAlert } from "@/lib/types";

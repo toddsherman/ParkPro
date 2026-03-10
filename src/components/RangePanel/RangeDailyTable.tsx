@@ -1,13 +1,12 @@
 "use client";
 
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { format } from "date-fns";
 import { CalendarDays, Sunrise, Sunset } from "lucide-react";
 import {
   DateRange,
   YearScoreData,
   DailyForecast,
-  CampsiteAvailability,
 } from "@/lib/types";
 import { getDatesBetween } from "@/lib/utils/dates";
 import { scoreToCrowdLevel } from "@/lib/utils/scoring";
@@ -18,7 +17,6 @@ interface RangeDailyTableProps {
   range: DateRange;
   yearScores: YearScoreData;
   weather: DailyForecast[];
-  campsites: CampsiteAvailability[];
 }
 
 interface DayRow {

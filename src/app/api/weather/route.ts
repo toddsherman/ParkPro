@@ -112,6 +112,30 @@ export async function GET(request: Request) {
     );
   }
 
+  const latNum = parseFloat(lat);
+  const lngNum = parseFloat(lng);
+
+  if (isNaN(latNum) || latNum < -90 || latNum > 90) {
+    return NextResponse.json(
+      { error: "Invalid lat: must be a number between -90 and 90" },
+      { status: 400 }
+    );
+  }
+
+  if (isNaN(lngNum) || lngNum < -180 || lngNum > 180) {
+    return NextResponse.json(
+      { error: "Invalid lng: must be a number between -180 and 180" },
+      { status: 400 }
+    );
+  }
+
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate)) {
+    return NextResponse.json(
+      { error: "Invalid startDate: must match YYYY-MM-DD format" },
+      { status: 400 }
+    );
+  }
+
   const apiKey = process.env.OPENWEATHERMAP_API_KEY;
 
   if (!apiKey) {

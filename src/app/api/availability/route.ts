@@ -70,6 +70,13 @@ export async function GET(request: Request) {
     );
   }
 
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate)) {
+    return NextResponse.json(
+      { error: "Invalid startDate: must match YYYY-MM-DD format" },
+      { status: 400 }
+    );
+  }
+
   const apiKey = process.env.RECREATION_GOV_API_KEY;
 
   if (!apiKey) {

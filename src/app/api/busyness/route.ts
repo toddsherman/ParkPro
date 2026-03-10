@@ -37,6 +37,13 @@ export async function GET(request: Request) {
     );
   }
 
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(startDate)) {
+    return NextResponse.json(
+      { error: "Invalid startDate: must match YYYY-MM-DD format" },
+      { status: 400 }
+    );
+  }
+
   const apiKey = process.env.BESTTIME_API_KEY;
 
   // If no API key, use the scoring-based estimates immediately
