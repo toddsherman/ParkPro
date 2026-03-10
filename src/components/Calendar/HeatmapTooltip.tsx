@@ -52,7 +52,7 @@ export default function HeatmapTooltip({
         <div className="mt-1.5 flex items-center gap-1.5 border-t border-slate-200 dark:border-slate-700 pt-1.5">
           <Thermometer className="w-3 h-3 text-slate-400 dark:text-slate-500" />
           <span className="text-xs text-slate-500 dark:text-slate-400">
-            Typical: {climate.highF}°/{climate.lowF}°F, {climate.conditions[0]}
+            Typical: {climate.highF}°/{climate.lowF}°F
           </span>
         </div>
       )}

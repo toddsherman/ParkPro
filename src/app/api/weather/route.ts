@@ -26,6 +26,17 @@ const CONDITION_ICONS: Record<string, string> = {
   Thunderstorm: "11d",
 };
 
+// Seasonal condition pools for fallback weather generation
+const SUMMER_CONDITIONS = ["Sunny", "Clear", "Partly Cloudy"];
+const WINTER_CONDITIONS = ["Snow", "Cloudy", "Partly Cloudy", "Rain"];
+const SPRING_FALL_CONDITIONS = ["Partly Cloudy", "Sunny", "Rain", "Cloudy"];
+
+function getSeasonalConditions(month: number): string[] {
+  if (month >= 6 && month <= 8) return SUMMER_CONDITIONS;
+  if (month >= 11 || month <= 2) return WINTER_CONDITIONS;
+  return SPRING_FALL_CONDITIONS;
+}
+
 /**
  * Generate realistic fallback weather data based on Yosemite seasonal patterns.
  */
@@ -45,8 +56,9 @@ function generateFallbackWeather(startDate: string): DailyForecast[] {
     const seed = (dayOfMonth * 13 + month * 7 + i * 3) % 20;
     const tempVariance = seed - 10; // -10 to +9
 
-    const conditionIndex = (dayOfMonth + i) % climate.conditions.length;
-    const condition = climate.conditions[conditionIndex];
+    const conditions = getSeasonalConditions(month);
+    const conditionIndex = (dayOfMonth + i) % conditions.length;
+    const condition = conditions[conditionIndex];
 
     const highTemp = Math.round(climate.highF + tempVariance * 0.5);
     const lowTemp = Math.round(climate.lowF + tempVariance * 0.3);
