@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { format } from "date-fns";
 import { BarChart3, Droplets } from "lucide-react";
 import { DateRange, YearScoreData } from "@/lib/types";
@@ -93,7 +93,7 @@ export default function RangeSummaryCard({
 
   return (
     <div
-      className={`rounded-xl border border-panel-border p-4 ${bgByLevel[summary.avgLevel]}`}
+      className={`rounded-xl border border-panel-border p-4 h-fit ${bgByLevel[summary.avgLevel]}`}
     >
       {/* Average Busyness */}
       <div className="flex items-center gap-3 mb-4">

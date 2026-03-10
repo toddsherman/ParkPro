@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useMemo } from "react";
+import { useMemo } from "react";
 import { format } from "date-fns";
 import {
   X,
@@ -19,7 +19,6 @@ import {
   DateRange,
   YearScoreData,
   DailyForecast,
-  CampsiteAvailability,
 } from "@/lib/types";
 import { formatDateRange, getDayCount, getDatesBetween } from "@/lib/utils/dates";
 import { scoreToCrowdLevel } from "@/lib/utils/scoring";
@@ -38,7 +37,6 @@ interface RangePanelProps {
   selectedRange: DateRange;
   yearScores: YearScoreData;
   weather: DailyForecast[];
-  campsites: CampsiteAvailability[];
   onClose: () => void;
 }
 
@@ -54,14 +52,13 @@ export default function RangePanel({
   selectedRange,
   yearScores,
   weather,
-  campsites,
   onClose,
 }: RangePanelProps) {
   const dayCount = getDayCount(selectedRange);
   const rangeLabel = formatDateRange(selectedRange);
 
-  // Compute trip tips
-  const tips = useMemo(() => {
+  // Compute trip tips and contextual alerts in a single pass
+  const analysis = useMemo(() => {
     const dates = getDatesBetween(selectedRange.startDate, selectedRange.endDate);
 
     // --- Best / worst days ---
@@ -107,20 +104,13 @@ export default function RangePanel({
     const valleyZone = zoneAvgs.find((z) => z.id === "yosemite-valley");
     const valleyBusy = valleyZone ? scoreToCrowdLevel(valleyZone.avg) !== "low" : false;
 
-    return { bestDays, worstDays, quietestZone, busiestZone, isBusy, valleyBusy };
-  }, [selectedRange, yearScores]);
-
-  // Contextual alerts for the selected range
-  const rangeAlerts = useMemo(() => {
-    const dates = getDatesBetween(selectedRange.startDate, selectedRange.endDate);
-
-    // Firefall overlap
+    // --- Firefall overlap ---
     const hasFirefall = dates.some((d) => {
       const [, m, day] = d.split("-").map(Number);
       return m === FIREFALL_WINDOW.month && day >= FIREFALL_WINDOW.seasonStart && day <= FIREFALL_WINDOW.seasonEnd;
     });
 
-    // Road closures
+    // --- Road closures ---
     const closedRoads = new Set<string>();
     for (const d of dates) {
       const [, m, day] = d.split("-").map(Number);
@@ -135,18 +125,24 @@ export default function RangePanel({
       }
     }
 
-    // Smoke risk
+    // --- Smoke risk ---
     const hasSmokeRisk = dates.some((d) => {
       const m = parseInt(d.split("-")[1], 10);
       return (SMOKE_RISK_MONTHS as readonly number[]).includes(m);
     });
 
     return {
+      bestDays,
+      worstDays,
+      quietestZone,
+      busiestZone,
+      isBusy,
+      valleyBusy,
       hasFirefall,
       closedRoads: Array.from(closedRoads),
       hasSmokeRisk,
     };
-  }, [selectedRange]);
+  }, [selectedRange, yearScores]);
 
   function formatDayShort(iso: string): string {
     return format(parseLocal(iso), "EEE, MMM d");
@@ -189,14 +185,14 @@ export default function RangePanel({
 
           <div className="space-y-3">
             {/* Best days */}
-            {tips.bestDays.length > 0 && (
+            {analysis.bestDays.length > 0 && (
               <div className="flex items-start gap-2.5 px-3 py-2.5 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800/40">
                 <TrendingDown className="w-4 h-4 text-green-600 dark:text-green-400 mt-0.5 shrink-0" />
                 <div>
                   <p className="text-xs font-medium text-green-800 dark:text-green-300 mb-1">
                     Best days to visit
                   </p>
-                  {tips.bestDays.map((d) => (
+                  {analysis.bestDays.map((d) => (
                     <p
                       key={d.date}
                       className="text-sm text-green-700 dark:text-green-400"
@@ -212,14 +208,14 @@ export default function RangePanel({
             )}
 
             {/* Worst days */}
-            {tips.worstDays.length > 0 && (
+            {analysis.worstDays.length > 0 && (
               <div className="flex items-start gap-2.5 px-3 py-2.5 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/40">
                 <TrendingUp className="w-4 h-4 text-red-600 dark:text-red-400 mt-0.5 shrink-0" />
                 <div>
                   <p className="text-xs font-medium text-red-800 dark:text-red-300 mb-1">
                     Consider avoiding
                   </p>
-                  {tips.worstDays.map((d) => (
+                  {analysis.worstDays.map((d) => (
                     <p
                       key={d.date}
                       className="text-sm text-red-700 dark:text-red-400"
@@ -237,7 +233,7 @@ export default function RangePanel({
             {/* Zone tips row */}
             <div className="grid grid-cols-2 gap-3">
               {/* Quietest zone */}
-              {tips.quietestZone && (
+              {analysis.quietestZone && (
                 <div className="flex items-start gap-2.5 px-3 py-2.5 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800/40">
                   <MapPin className="w-4 h-4 text-green-600 dark:text-green-400 mt-0.5 shrink-0" />
                   <div>
@@ -245,9 +241,9 @@ export default function RangePanel({
                       Quietest zone
                     </p>
                     <p className="text-sm text-green-700 dark:text-green-400">
-                      {tips.quietestZone.name}{" "}
+                      {analysis.quietestZone.name}{" "}
                       <span className="text-xs text-green-600/70 dark:text-green-500">
-                        ({tips.quietestZone.avg.toFixed(1)})
+                        ({analysis.quietestZone.avg.toFixed(1)})
                       </span>
                     </p>
                   </div>
@@ -255,7 +251,7 @@ export default function RangePanel({
               )}
 
               {/* Busiest zone */}
-              {tips.busiestZone && (
+              {analysis.busiestZone && (
                 <div className="flex items-start gap-2.5 px-3 py-2.5 rounded-lg bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800/40">
                   <MapPin className="w-4 h-4 text-red-600 dark:text-red-400 mt-0.5 shrink-0" />
                   <div>
@@ -263,9 +259,9 @@ export default function RangePanel({
                       Busiest zone
                     </p>
                     <p className="text-sm text-red-700 dark:text-red-400">
-                      {tips.busiestZone.name}{" "}
+                      {analysis.busiestZone.name}{" "}
                       <span className="text-xs text-red-600/70 dark:text-red-500">
-                        ({tips.busiestZone.avg.toFixed(1)})
+                        ({analysis.busiestZone.avg.toFixed(1)})
                       </span>
                     </p>
                   </div>
@@ -274,7 +270,7 @@ export default function RangePanel({
             </div>
 
             {/* Contextual alerts */}
-            {rangeAlerts.hasFirefall && (
+            {analysis.hasFirefall && (
               <div className="flex items-start gap-2.5 px-3 py-2.5 rounded-lg bg-orange-50 dark:bg-orange-950/30 border border-orange-200 dark:border-orange-800/40">
                 <Flame className="w-4 h-4 text-orange-500 mt-0.5 shrink-0" />
                 <div>
@@ -290,23 +286,23 @@ export default function RangePanel({
               </div>
             )}
 
-            {rangeAlerts.closedRoads.length > 0 && (
-              <div className="flex items-start gap-2.5 px-3 py-2.5 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-800/40">
-                <AlertTriangle className="w-4 h-4 text-amber-600 dark:text-amber-400 mt-0.5 shrink-0" />
+            {analysis.closedRoads.length > 0 && (
+              <div className="flex items-start gap-2.5 px-3 py-2.5 rounded-lg bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800/40">
+                <AlertTriangle className="w-4 h-4 text-sky-600 dark:text-sky-400 mt-0.5 shrink-0" />
                 <div>
-                  <p className="text-xs font-medium text-amber-800 dark:text-amber-300 mb-0.5">
+                  <p className="text-xs font-medium text-sky-800 dark:text-sky-300 mb-0.5">
                     Seasonal Road Closures
                   </p>
-                  <p className="text-sm text-amber-700 dark:text-amber-400">
+                  <p className="text-sm text-sky-700 dark:text-sky-400">
                     Typically closed during your dates:{" "}
-                    {rangeAlerts.closedRoads.join(", ")}.
+                    {analysis.closedRoads.join(", ")}.
                     Affected zones will have reduced accessibility.
                   </p>
                 </div>
               </div>
             )}
 
-            {rangeAlerts.hasSmokeRisk && (
+            {analysis.hasSmokeRisk && (
               <div className="flex items-start gap-2.5 px-3 py-2.5 rounded-lg bg-slate-50 dark:bg-slate-800/50 border border-slate-200 dark:border-slate-700">
                 <Wind className="w-4 h-4 text-slate-500 dark:text-slate-400 mt-0.5 shrink-0" />
                 <div>
@@ -320,7 +316,7 @@ export default function RangePanel({
                       href="https://fire.airnow.gov/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="underline hover:text-emerald-600 dark:hover:text-emerald-400"
+                      className="underline hover:text-sky-600 dark:hover:text-sky-400"
                     >
                       AirNow Fire &amp; Smoke Map
                     </a>{" "}
@@ -331,7 +327,7 @@ export default function RangePanel({
             )}
 
             {/* Crowd-level pro tips (moderate or high only) */}
-            {tips.isBusy && (
+            {analysis.isBusy && (
               <div className="flex items-start gap-2.5 px-3 py-2.5 rounded-lg bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800/40">
                 <Clock className="w-4 h-4 text-sky-600 dark:text-sky-400 mt-0.5 shrink-0" />
                 <div>
@@ -346,7 +342,7 @@ export default function RangePanel({
               </div>
             )}
 
-            {tips.valleyBusy && (
+            {analysis.valleyBusy && (
               <div className="flex items-start gap-2.5 px-3 py-2.5 rounded-lg bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800/40">
                 <Bike className="w-4 h-4 text-sky-600 dark:text-sky-400 mt-0.5 shrink-0" />
                 <div>
@@ -362,7 +358,7 @@ export default function RangePanel({
               </div>
             )}
 
-            {tips.isBusy && (
+            {analysis.isBusy && (
               <div className="flex items-start gap-2.5 px-3 py-2.5 rounded-lg bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800/40">
                 <UtensilsCrossed className="w-4 h-4 text-sky-600 dark:text-sky-400 mt-0.5 shrink-0" />
                 <div>
@@ -391,7 +387,6 @@ export default function RangePanel({
           range={selectedRange}
           yearScores={yearScores}
           weather={weather}
-          campsites={campsites}
         />
       </div>
     </section>

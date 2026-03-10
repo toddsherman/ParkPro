@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { Mountain, Bell } from "lucide-react";
 import { useApp } from "@/lib/context";
 import AlertsBanner from "./AlertsBanner";
