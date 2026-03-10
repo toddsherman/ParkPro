@@ -13,6 +13,7 @@ import { fetchWeekWeather } from "@/lib/api/weather";
 import { YOSEMITE_CENTER } from "@/lib/constants";
 import { DateRange } from "@/lib/types";
 import { Mountain, TreePine } from "lucide-react";
+import DataMethodology from "@/components/DataMethodology";
 
 export default function Home() {
   const {
@@ -132,9 +133,10 @@ export default function Home() {
             year={currentYear}
           />
 
-          {/* Legend */}
-          <div className="mt-4">
+          {/* Legend + methodology link */}
+          <div className="mt-4 flex items-end justify-between">
             <HeatmapLegend />
+            <DataMethodology />
           </div>
 
           {/* Range detail section (below calendar) */}
