@@ -38,7 +38,7 @@ describe("API route: /api/weather", () => {
 });
 
 describe("API route: /api/alerts", () => {
-  it("returns fallback alert without API key", async () => {
+  it("returns empty alerts array without API key", async () => {
     const { GET } = await import("@/app/api/alerts/route");
 
     const request = new Request("http://localhost:3000/api/alerts");
@@ -46,15 +46,9 @@ describe("API route: /api/alerts", () => {
     expect(response.status).toBe(200);
 
     const json = await response.json();
-    // Route wraps data in { alerts: [...], source: "stub" }
-    const data = json.alerts;
-    expect(Array.isArray(data)).toBe(true);
-    expect(data.length).toBeGreaterThanOrEqual(1);
-
-    const infoAlert = data.find(
-      (a: { category: string }) => a.category === "information"
-    );
-    expect(infoAlert).toBeDefined();
+    expect(json.source).toBe("stub");
+    expect(Array.isArray(json.alerts)).toBe(true);
+    expect(json.alerts.length).toBe(0);
   });
 });
 

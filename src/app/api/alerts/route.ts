@@ -5,16 +5,7 @@
 import { NextResponse } from "next/server";
 import type { ParkAlert, NPSAlertResponse } from "@/lib/types";
 
-const STUB_ALERTS: ParkAlert[] = [
-  {
-    id: "stub-no-api-key",
-    title: "Connect your NPS API key for live park alerts",
-    description:
-      "Set the NPS_API_KEY environment variable to receive real-time alerts about road closures, weather warnings, and other park conditions from the National Park Service.",
-    category: "information",
-    url: "https://developer.nps.gov/",
-  },
-];
+const STUB_ALERTS: ParkAlert[] = [];
 
 function mapNPSCategory(
   category: string

@@ -175,7 +175,7 @@ export const NPS_PARK_CODE = "yose";
 
 // Color mappings for busyness
 export const CROWD_COLORS: Record<string, string> = {
-  low: "#22c55e", // green-500
+  low: "#94a3b8", // slate-400
   moderate: "#eab308", // yellow-500
   high: "#ef4444", // red-500
   unknown: "#9ca3af", // gray-400

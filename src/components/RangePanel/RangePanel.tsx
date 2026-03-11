@@ -190,19 +190,19 @@ export default function RangePanel({
           <div className="space-y-3">
             {/* Best days */}
             {analysis.bestDays.length > 0 && (
-              <div className="flex items-start gap-2.5 px-3 py-2.5 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800/40">
-                <TrendingDown className="w-4 h-4 text-green-600 dark:text-green-400 mt-0.5 shrink-0" />
+              <div className="flex items-start gap-2.5 px-3 py-2.5 rounded-lg bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800/40">
+                <TrendingDown className="w-4 h-4 text-sky-600 dark:text-sky-400 mt-0.5 shrink-0" />
                 <div>
-                  <p className="text-xs font-medium text-green-800 dark:text-green-300 mb-1">
+                  <p className="text-xs font-medium text-sky-800 dark:text-sky-300 mb-1">
                     Best days to visit
                   </p>
                   {analysis.bestDays.map((d) => (
                     <p
                       key={d.date}
-                      className="text-sm text-green-700 dark:text-green-400"
+                      className="text-sm text-sky-700 dark:text-sky-400"
                     >
                       {formatDayShort(d.date)}{" "}
-                      <span className="text-xs text-green-600/70 dark:text-green-500">
+                      <span className="text-xs text-sky-600/70 dark:text-sky-500">
                         (score: {d.score.toFixed(1)})
                       </span>
                     </p>
@@ -238,15 +238,15 @@ export default function RangePanel({
             <div className="grid grid-cols-2 gap-3">
               {/* Quietest zone */}
               {analysis.quietestZone && (
-                <div className="flex items-start gap-2.5 px-3 py-2.5 rounded-lg bg-green-50 dark:bg-green-950/30 border border-green-200 dark:border-green-800/40">
-                  <MapPin className="w-4 h-4 text-green-600 dark:text-green-400 mt-0.5 shrink-0" />
+                <div className="flex items-start gap-2.5 px-3 py-2.5 rounded-lg bg-sky-50 dark:bg-sky-950/30 border border-sky-200 dark:border-sky-800/40">
+                  <MapPin className="w-4 h-4 text-sky-600 dark:text-sky-400 mt-0.5 shrink-0" />
                   <div>
-                    <p className="text-xs font-medium text-green-800 dark:text-green-300 mb-0.5">
+                    <p className="text-xs font-medium text-sky-800 dark:text-sky-300 mb-0.5">
                       Quietest zone
                     </p>
-                    <p className="text-sm text-green-700 dark:text-green-400">
+                    <p className="text-sm text-sky-700 dark:text-sky-400">
                       {analysis.quietestZone.name}{" "}
-                      <span className="text-xs text-green-600/70 dark:text-green-500">
+                      <span className="text-xs text-sky-600/70 dark:text-sky-500">
                         ({analysis.quietestZone.avg.toFixed(1)})
                       </span>
                     </p>

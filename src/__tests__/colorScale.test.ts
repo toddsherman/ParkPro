@@ -8,10 +8,10 @@ describe("scoreToColor", () => {
     }
   });
 
-  it("returns light green for score 0", () => {
+  it("returns near-white slate for score 0", () => {
     const color = scoreToColor(0);
-    // Should be #d1fae5 (light green)
-    expect(color).toBe("#d1fae5");
+    // Should be #f1f5f9 (slate-100, snow-white)
+    expect(color).toBe("#f1f5f9");
   });
 
   it("returns red-ish for score 10", () => {

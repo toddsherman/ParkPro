@@ -75,7 +75,7 @@ export default function RangeSummaryCard({
   }, [range]);
 
   const bgByLevel: Record<string, string> = {
-    low: "bg-green-50 dark:bg-green-950/30",
+    low: "bg-slate-50 dark:bg-slate-800/30",
     moderate: "bg-yellow-50 dark:bg-yellow-950/30",
     high: "bg-red-50 dark:bg-red-950/30",
     unknown: "bg-slate-50 dark:bg-slate-800/30",
@@ -124,7 +124,7 @@ export default function RangeSummaryCard({
       <div className="grid grid-cols-2 gap-3 mb-4">
         {summary.bestDay && (
           <div className="rounded-lg bg-white/60 dark:bg-slate-800/60 p-3">
-            <p className="text-xs font-medium text-green-700 dark:text-green-400 mb-1">
+            <p className="text-xs font-medium text-sky-700 dark:text-sky-400 mb-1">
               Best Day
             </p>
             <p className="text-sm font-semibold text-slate-900 dark:text-white">
@@ -159,7 +159,7 @@ export default function RangeSummaryCard({
           <div className="flex h-3 rounded-full overflow-hidden bg-slate-200 dark:bg-slate-700">
             {summary.levelCounts.low > 0 && (
               <div
-                className="bg-green-500 transition-all"
+                className="bg-slate-400 transition-all"
                 style={{
                   width: `${(summary.levelCounts.low / totalCounted) * 100}%`,
                 }}
@@ -187,7 +187,7 @@ export default function RangeSummaryCard({
           </div>
           <div className="flex justify-between mt-1.5 text-xs text-slate-500 dark:text-slate-400">
             <span className="flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-green-500" />
+              <span className="w-2 h-2 rounded-full bg-slate-400" />
               Low: {summary.levelCounts.low}
             </span>
             <span className="flex items-center gap-1">
