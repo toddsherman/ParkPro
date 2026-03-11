@@ -1,7 +1,7 @@
 "use client";
 
 import { format, parseISO, getMonth } from "date-fns";
-import { scoreToCrowdLevel } from "@/lib/utils/scoring";
+import { scoreToCrowdLevel, getHolidayLabel } from "@/lib/utils/scoring";
 import { CROWD_COLORS, CROWD_LABELS, MONTHLY_CLIMATE } from "@/lib/constants";
 import { Thermometer } from "lucide-react";
 
@@ -16,13 +16,15 @@ export default function HeatmapTooltip({
   score,
   position,
 }: HeatmapTooltipProps) {
+  const parsed = parseISO(date);
   const crowdLevel = scoreToCrowdLevel(score);
-  const formattedDate = format(parseISO(date), "EEEE, MMMM d, yyyy");
+  const formattedDate = format(parsed, "EEEE, MMMM d, yyyy");
   const dotColor = CROWD_COLORS[crowdLevel] ?? CROWD_COLORS.unknown;
   const label = CROWD_LABELS[crowdLevel] ?? CROWD_LABELS.unknown;
+  const holidayLabel = getHolidayLabel(parsed);
 
   // Monthly climate for this date
-  const month = getMonth(parseISO(date)) + 1; // 1-indexed
+  const month = getMonth(parsed) + 1; // 1-indexed
   const climate = MONTHLY_CLIMATE[month];
 
   return (
@@ -36,6 +38,11 @@ export default function HeatmapTooltip({
       <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
         {formattedDate}
       </p>
+      {holidayLabel && (
+        <span className="mt-1 inline-block rounded-full bg-sky-100 dark:bg-sky-900/50 px-2 py-0.5 text-[10px] font-medium text-sky-700 dark:text-sky-300">
+          {holidayLabel}
+        </span>
+      )}
       <p className="mt-0.5 text-xs text-slate-500 dark:text-slate-400">
         Score: {score.toFixed(1)} / 10
       </p>

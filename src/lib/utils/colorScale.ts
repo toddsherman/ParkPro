@@ -1,10 +1,10 @@
 /**
  * Convert a busyness score (0-10) to a hex colour on a
- * green → yellow → red gradient.
+ * snow-white → slate → yellow → orange → red gradient.
  *
  * Stops:
- *  0 → #d1fae5  (light green / empty)
- *  3 → #22c55e  (green)
+ *  0 → #f1f5f9  (slate-100 / near-white, "snow")
+ *  3 → #94a3b8  (slate-400 / cool gray)
  *  5 → #eab308  (yellow)
  *  7 → #f97316  (orange)
  * 10 → #dc2626  (red)
@@ -14,8 +14,8 @@ export function scoreToColor(score: number): string {
 
   // Define colour stops as [score, r, g, b]
   const stops: [number, number, number, number][] = [
-    [0, 0xd1, 0xfa, 0xe5],
-    [3, 0x22, 0xc5, 0x5e],
+    [0, 0xf1, 0xf5, 0xf9],
+    [3, 0x94, 0xa3, 0xb8],
     [5, 0xea, 0xb3, 0x08],
     [7, 0xf9, 0x73, 0x16],
     [10, 0xdc, 0x26, 0x26],

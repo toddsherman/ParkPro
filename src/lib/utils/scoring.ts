@@ -93,6 +93,73 @@ function getHolidayMultiplier(date: Date): number {
   return m;
 }
 
+/**
+ * Returns a human-readable holiday/event label for the given date, or null.
+ * Mirrors the date-matching logic of getHolidayMultiplier so tooltips
+ * explain *why* a day has a boosted score.
+ */
+export function getHolidayLabel(date: Date): string | null {
+  const month = date.getMonth() + 1;
+  const dayOfMonth = date.getDate();
+  const dayOfWeek = date.getDay(); // 0=Sun
+
+  // --- Named holidays (most specific first) ---
+
+  // New Year's
+  if (month === 1 && dayOfMonth === 1) return "New Year's Day";
+  if (month === 1 && dayOfMonth === 2) return "New Year's";
+
+  // MLK Day (3rd Monday of January)
+  if (month === 1 && dayOfWeek === 1 && dayOfMonth >= 15 && dayOfMonth <= 21) return "MLK Day";
+  if (month === 1 && dayOfMonth >= 13 && dayOfMonth <= 20 && (dayOfWeek === 0 || dayOfWeek === 6)) return "MLK Weekend";
+
+  // Presidents' Day (3rd Monday of February)
+  if (month === 2 && dayOfWeek === 1 && dayOfMonth >= 15 && dayOfMonth <= 21) return "Presidents' Day";
+  if (month === 2 && dayOfMonth >= 13 && dayOfMonth <= 20 && (dayOfWeek === 0 || dayOfWeek === 6)) return "Presidents' Weekend";
+
+  // Memorial Day (last Monday of May)
+  if (month === 5 && dayOfWeek === 1 && dayOfMonth >= 25) return "Memorial Day";
+  if (month === 5 && dayOfMonth >= 23) {
+    if (dayOfWeek === 0 || dayOfWeek === 6) return "Memorial Day Wknd";
+    if (dayOfWeek === 5 && dayOfMonth >= 24) return "Memorial Day Wknd";
+  }
+
+  // Independence Day (July 4th)
+  if (month === 7 && dayOfMonth === 4) return "Independence Day";
+  if (month === 7 && dayOfMonth >= 2 && dayOfMonth <= 6 && (dayOfWeek === 0 || dayOfWeek === 6)) return "July 4th Weekend";
+
+  // Labor Day (1st Monday of September)
+  if (month === 9 && dayOfWeek === 1 && dayOfMonth <= 7) return "Labor Day";
+  if (month === 9 && dayOfMonth <= 7) {
+    if (dayOfWeek === 0 || dayOfWeek === 6) return "Labor Day Wknd";
+    if (dayOfWeek === 5 && dayOfMonth <= 6) return "Labor Day Wknd";
+  }
+
+  // Columbus Day / Indigenous Peoples' Day (2nd Monday of October)
+  if (month === 10 && dayOfWeek === 1 && dayOfMonth >= 8 && dayOfMonth <= 14) return "Indigenous Peoples' Day";
+  if (month === 10 && dayOfMonth >= 6 && dayOfMonth <= 13 && (dayOfWeek === 0 || dayOfWeek === 6)) return "Indigenous Peoples' Wknd";
+
+  // Thanksgiving (4th Thursday of November)
+  if (month === 11 && dayOfWeek === 4 && dayOfMonth >= 22 && dayOfMonth <= 28) return "Thanksgiving";
+  if (month === 11 && dayOfWeek === 5 && dayOfMonth >= 23 && dayOfMonth <= 29) return "Black Friday";
+  if (month === 11 && dayOfMonth >= 22 && dayOfMonth <= 29 && (dayOfWeek === 0 || dayOfWeek === 6)) return "Thanksgiving Wknd";
+
+  // Christmas & New Year's
+  if (month === 12 && dayOfMonth === 25) return "Christmas Day";
+  if (month === 12 && dayOfMonth >= 23) return "Christmas Week";
+
+  // --- Park-specific events ---
+
+  // Firefall / Horsetail Fall (checked after Presidents' Day so named holidays win)
+  if (month === 2 && dayOfMonth >= 16 && dayOfMonth <= 24) return "Firefall Peak";
+  if (month === 2 && dayOfMonth >= 10 && dayOfMonth <= 28) return "Firefall Season";
+
+  // Spring break effect
+  if ((month === 3 && dayOfMonth >= 15) || (month === 4 && dayOfMonth <= 15)) return "Spring Break Season";
+
+  return null;
+}
+
 // ---------------------------------------------------------------------------
 // Seasonal Road Closure Detection
 // Returns a multiplier that dramatically reduces zone scores when the access
