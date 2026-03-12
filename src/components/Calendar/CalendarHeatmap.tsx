@@ -15,7 +15,7 @@ import {
 } from "date-fns";
 import { scoreToColor, EMPTY_COLOR } from "@/lib/utils/colorScale";
 import { getHolidayLabel } from "@/lib/utils/scoring";
-import { MONTHLY_CLIMATE, SMOKE_RISK_MONTHS } from "@/lib/constants";
+import { MONTHLY_CLIMATE, SMOKE_RISK_MONTHS, FIREFALL_WINDOW } from "@/lib/constants";
 import type { DateRange, YearScoreData } from "@/lib/types";
 import HeatmapTooltip from "./HeatmapTooltip";
 
@@ -37,6 +37,7 @@ interface CellData {
   row: number; // 0 = Mon ... 6 = Sun
   score: number | undefined;
   isHoliday: boolean; // has a holiday/event label
+  isFirefall: boolean; // within Firefall viewing window
 }
 
 type SelectionPhase = "idle" | "selecting";
@@ -148,6 +149,8 @@ export default function CalendarHeatmap({
       }
 
       const dateStr = toDateStr(day);
+      const m = day.getMonth() + 1;
+      const d = day.getDate();
       cellList.push({
         dateStr,
         date: day,
@@ -155,6 +158,10 @@ export default function CalendarHeatmap({
         row,
         score: yearScores.dailyAverages[dateStr],
         isHoliday: getHolidayLabel(day) !== null,
+        isFirefall:
+          m === FIREFALL_WINDOW.month &&
+          d >= FIREFALL_WINDOW.seasonStart &&
+          d <= FIREFALL_WINDOW.seasonEnd,
       });
     }
 
@@ -334,6 +341,12 @@ export default function CalendarHeatmap({
                       left: cell.col * (cellSize + CELL_GAP),
                       top: cell.row * (cellSize + CELL_GAP),
                       backgroundColor: color,
+                      ...(cell.isFirefall
+                        ? {
+                            outline: "2px solid rgba(249, 115, 22, 0.7)",
+                            outlineOffset: "-2px",
+                          }
+                        : {}),
                     }}
                     onClick={() => handleCellClick(cell.dateStr)}
                     onMouseEnter={(e) =>
@@ -363,11 +376,11 @@ export default function CalendarHeatmap({
                       <span
                         className="leading-none text-white select-none"
                         style={{
-                          fontSize: Math.max(7, cellSize * 0.55),
+                          fontSize: Math.max(5, cellSize * 0.35),
                           textShadow: "0 0 2px rgba(0,0,0,0.5)",
                         }}
                       >
-                        ★
+                        ●
                       </span>
                     )}
                   </div>
