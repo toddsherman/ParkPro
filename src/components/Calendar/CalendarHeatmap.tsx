@@ -340,12 +340,6 @@ export default function CalendarHeatmap({
                       left: cell.col * (cellSize + CELL_GAP),
                       top: cell.row * (cellSize + CELL_GAP),
                       backgroundColor: color,
-                      ...(cell.isFirefall
-                        ? {
-                            outline: "2px solid rgba(249, 115, 22, 0.7)",
-                            outlineOffset: "-2px",
-                          }
-                        : {}),
                     }}
                     onClick={() => handleCellClick(cell.dateStr)}
                     onMouseEnter={(e) =>
@@ -371,7 +365,17 @@ export default function CalendarHeatmap({
                       }
                     }}
                   >
-                    {cell.isHoliday && (
+                    {cell.isFirefall ? (
+                      <span
+                        className="leading-none select-none"
+                        style={{
+                          fontSize: Math.max(6, cellSize * 0.45),
+                          filter: "drop-shadow(0 0 1px rgba(0,0,0,0.3))",
+                        }}
+                      >
+                        🔥
+                      </span>
+                    ) : cell.isHoliday ? (
                       <span
                         className="leading-none text-white select-none"
                         style={{
@@ -381,7 +385,7 @@ export default function CalendarHeatmap({
                       >
                         ●
                       </span>
-                    )}
+                    ) : null}
                   </div>
                 );
               })}
