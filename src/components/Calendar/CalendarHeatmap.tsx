@@ -52,7 +52,11 @@ const MIN_CELL_SIZE = 10;
 // flowing downward, month labels down the left edge.
 const MOBILE_MONTH_LABEL_WIDTH = 44;
 const MOBILE_DOW_HEADER_HEIGHT = 24;
-const MOBILE_MIN_CELL_SIZE = 28;
+const MOBILE_MIN_CELL_SIZE = 24;
+// Without a cap the transposed cells grow to fill the width (~39px at 375px),
+// which reads oversized and makes the year ~2200px tall. 30px keeps a
+// comfortable tap pitch (33px with the gap) and shortens the year by ~20%.
+const MOBILE_MAX_CELL_SIZE = 30;
 
 // ---------------------------------------------------------------------------
 // Helpers
@@ -207,12 +211,16 @@ export default function CalendarHeatmap({
     return Math.max(MIN_CELL_SIZE, computed);
   }, [containerWidth, totalCols]);
 
-  // Transposed layout sizing: 7 weekday columns filling the container width.
+  // Transposed layout sizing: 7 weekday columns, clamped to a comfortable
+  // range rather than filling the container (the grid centers instead).
   const mobileCellSize = useMemo(() => {
     if (containerWidth === 0) return MOBILE_MIN_CELL_SIZE;
     const availableWidth = containerWidth - MOBILE_MONTH_LABEL_WIDTH;
     const computed = Math.floor(availableWidth / 7) - CELL_GAP;
-    return Math.max(MOBILE_MIN_CELL_SIZE, computed);
+    return Math.min(
+      MOBILE_MAX_CELL_SIZE,
+      Math.max(MOBILE_MIN_CELL_SIZE, computed)
+    );
   }, [containerWidth]);
 
   // Preview range while selecting ---------------------------------------------
@@ -367,7 +375,7 @@ export default function CalendarHeatmap({
         /* Transposed layout: weekday labels across the top, weeks flowing
            downward, month labels down the left edge. Fits the viewport width —
            no horizontal scrolling. */
-        <div className="flex">
+        <div className="flex justify-center">
           {/* Month labels column (down the left edge) */}
           <div
             className="relative shrink-0"

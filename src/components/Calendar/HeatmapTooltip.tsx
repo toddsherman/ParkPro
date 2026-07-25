@@ -1,9 +1,12 @@
 "use client";
 
+import { useLayoutEffect, useRef, useState } from "react";
 import { format, parseISO, getMonth } from "date-fns";
 import { scoreToCrowdLevel, getHolidayLabel } from "@/lib/utils/scoring";
 import { CROWD_COLORS, CROWD_LABELS, MONTHLY_CLIMATE } from "@/lib/constants";
 import { Thermometer } from "lucide-react";
+
+const EDGE = 8; // minimum gap between the tooltip and the viewport edge
 
 interface HeatmapTooltipProps {
   date: string;
@@ -16,6 +19,35 @@ export default function HeatmapTooltip({
   score,
   position,
 }: HeatmapTooltipProps) {
+  const ref = useRef<HTMLDivElement>(null);
+  const [clamped, setClamped] = useState<{ left: number; top: number } | null>(
+    null
+  );
+
+  // The naive spot (right of and slightly above the pointer) runs off screen
+  // for taps near the right or bottom edges — on phones that is most of the
+  // Sat/Sun columns. Measure the rendered size and clamp before paint,
+  // flipping above the pointer when the bottom would overflow.
+  useLayoutEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const { width, height } = el.getBoundingClientRect();
+
+    let left = position.x + 12;
+    if (left + width > window.innerWidth - EDGE) {
+      left = position.x - width - 12; // flip to the left of the pointer
+    }
+    left = Math.max(EDGE, Math.min(left, window.innerWidth - width - EDGE));
+
+    let top = position.y - 8;
+    if (top + height > window.innerHeight - EDGE) {
+      top = position.y - height - 12; // flip above the pointer
+    }
+    top = Math.max(EDGE, Math.min(top, window.innerHeight - height - EDGE));
+
+    setClamped({ left, top });
+  }, [position.x, position.y]);
+
   const parsed = parseISO(date);
   const crowdLevel = scoreToCrowdLevel(score);
   const formattedDate = format(parsed, "EEEE, MMMM d, yyyy");
@@ -29,10 +61,14 @@ export default function HeatmapTooltip({
 
   return (
     <div
+      ref={ref}
       className="pointer-events-none fixed z-50 rounded-lg bg-white px-3 py-2 shadow-lg dark:bg-slate-800"
       style={{
-        left: position.x + 12,
-        top: position.y - 8,
+        left: clamped?.left ?? position.x + 12,
+        top: clamped?.top ?? position.y - 8,
+        // measured-but-unclamped first frame never paints: useLayoutEffect
+        // runs before paint, so hide until the clamp has been computed
+        visibility: clamped ? "visible" : "hidden",
       }}
     >
       <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
