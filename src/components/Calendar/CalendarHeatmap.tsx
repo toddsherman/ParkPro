@@ -48,6 +48,12 @@ const DAY_LABEL_WIDTH = 36;
 const CELL_GAP = 3;
 const MIN_CELL_SIZE = 10;
 
+// Transposed (narrow-screen) layout: weekday labels across the top, weeks
+// flowing downward, month labels down the left edge.
+const MOBILE_MONTH_LABEL_WIDTH = 44;
+const MOBILE_DOW_HEADER_HEIGHT = 24;
+const MOBILE_MIN_CELL_SIZE = 28;
+
 // ---------------------------------------------------------------------------
 // Helpers
 // ---------------------------------------------------------------------------
@@ -119,6 +125,19 @@ export default function CalendarHeatmap({
     return () => ro.disconnect();
   }, []);
 
+  // Orientation: transpose the grid below 640px. SSR-safe — initialized false
+  // so the server and first client render agree (desktop layout renders first,
+  // then switches after mount).
+  const [isNarrow, setIsNarrow] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 639px)");
+    const update = () => setIsNarrow(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
   // Escape to cancel selection ------------------------------------------------
   useEffect(() => {
     function onKeyDown(e: KeyboardEvent) {
@@ -188,6 +207,14 @@ export default function CalendarHeatmap({
     return Math.max(MIN_CELL_SIZE, computed);
   }, [containerWidth, totalCols]);
 
+  // Transposed layout sizing: 7 weekday columns filling the container width.
+  const mobileCellSize = useMemo(() => {
+    if (containerWidth === 0) return MOBILE_MIN_CELL_SIZE;
+    const availableWidth = containerWidth - MOBILE_MONTH_LABEL_WIDTH;
+    const computed = Math.floor(availableWidth / 7) - CELL_GAP;
+    return Math.max(MOBILE_MIN_CELL_SIZE, computed);
+  }, [containerWidth]);
+
   // Preview range while selecting ---------------------------------------------
   const previewRange: DateRange | null = useMemo(() => {
     if (phase !== "selecting" || !selStart || !hoverDate) return null;
@@ -238,163 +265,252 @@ export default function CalendarHeatmap({
     setTooltip(null);
   }, []);
 
+  // Cell renderer (shared by both orientations) --------------------------------
+  const renderCell = (
+    cell: CellData,
+    size: number,
+    left: number,
+    top: number
+  ) => {
+    const hasScore = cell.score !== undefined;
+    const color = hasScore ? scoreToColor(cell.score!) : EMPTY_COLOR;
+    const today = isToday(cell.date);
+    const inHighlight = isInRange(cell.dateStr, highlightRange);
+    const hasSelection = highlightRange !== null;
+
+    return (
+      <div
+        key={cell.dateStr}
+        role="button"
+        tabIndex={0}
+        aria-label={`${format(cell.date, "MMM d, yyyy")}${hasScore ? ` — score ${cell.score!.toFixed(1)}` : ""}`}
+        className={[
+          "absolute cursor-pointer rounded-sm transition-opacity flex items-center justify-center",
+          today
+            ? "ring-2 ring-slate-800 dark:ring-slate-200"
+            : "",
+          inHighlight
+            ? "ring-2 ring-blue-500 dark:ring-blue-400"
+            : "",
+          hasSelection && !inHighlight ? "opacity-40" : "",
+        ]
+          .filter(Boolean)
+          .join(" ")}
+        style={{
+          width: size,
+          height: size,
+          left,
+          top,
+          backgroundColor: color,
+        }}
+        onClick={() => handleCellClick(cell.dateStr)}
+        onMouseEnter={(e) =>
+          handleCellHover(cell.dateStr, cell.score, e)
+        }
+        onMouseMove={(e) => {
+          if (tooltip) {
+            setTooltip((prev) =>
+              prev
+                ? {
+                    ...prev,
+                    position: { x: e.clientX, y: e.clientY },
+                  }
+                : null
+            );
+          }
+        }}
+        onMouseLeave={handleCellLeave}
+        onKeyDown={(e) => {
+          if (e.key === "Enter" || e.key === " ") {
+            e.preventDefault();
+            handleCellClick(cell.dateStr);
+          }
+        }}
+      >
+        {cell.isFirefall ? (
+          <svg
+            viewBox="0 0 24 24"
+            fill="black"
+            className="select-none"
+            style={{
+              width: Math.max(7, size * 0.55),
+              height: Math.max(7, size * 0.55),
+            }}
+          >
+            <path d="M12 23c-3.9 0-7-2.9-7-6.8 0-3.2 2.1-6.2 4.3-8.4.3-.3.8-.1.8.4 0 1.2.5 2.3 1.3 3 .1.1.3 0 .3-.2-.2-2.5.7-5.1 2.6-7 .3-.3.8-.1.8.3.3 3.1 2.5 5.5 4.2 7.6 1.1 1.3 1.7 3 1.7 4.6C21 20.1 17.9 23 12 23z" />
+          </svg>
+        ) : cell.isHoliday ? (
+          <span
+            className="leading-none text-white select-none"
+            style={{
+              fontSize: Math.max(5, size * 0.35),
+              textShadow: "0 0 2px rgba(0,0,0,0.5)",
+            }}
+          >
+            ●
+          </span>
+        ) : null}
+      </div>
+    );
+  };
+
   // Sizing --------------------------------------------------------------------
   const gridWidth = totalCols * (cellSize + CELL_GAP);
   const gridHeight = 7 * (cellSize + CELL_GAP);
 
+  const mobileGridWidth = 7 * (mobileCellSize + CELL_GAP);
+  const mobileGridHeight = totalCols * (mobileCellSize + CELL_GAP);
+
   return (
     <div className="w-full" ref={containerRef}>
-      {/* Scrollable wrapper (for very narrow screens) */}
-      <div className="overflow-x-auto">
-        <div
-          style={{
-            display: "inline-flex",
-            minWidth: gridWidth + DAY_LABEL_WIDTH + 8,
-          }}
-        >
-          {/* Day-of-week labels column */}
+      {isNarrow ? (
+        /* Transposed layout: weekday labels across the top, weeks flowing
+           downward, month labels down the left edge. Fits the viewport width —
+           no horizontal scrolling. */
+        <div className="flex">
+          {/* Month labels column (down the left edge) */}
           <div
-            className="flex flex-col shrink-0"
-            style={{
-              width: DAY_LABEL_WIDTH,
-              paddingTop: cellSize + CELL_GAP + 20, // offset for month labels + temps row
-            }}
+            className="relative shrink-0"
+            style={{ width: MOBILE_MONTH_LABEL_WIDTH }}
           >
-            {DAY_LABELS.map((label, i) => (
-              <div
-                key={i}
-                className="flex items-center text-xs text-slate-500 dark:text-slate-400"
-                style={{ height: cellSize + CELL_GAP }}
-              >
-                {label}
-              </div>
-            ))}
+            {monthLabels.map(({ col, label, month }) => {
+              const climate = MONTHLY_CLIMATE[month];
+              const isSmokeMonth = (SMOKE_RISK_MONTHS as readonly number[]).includes(month);
+              return (
+                <div
+                  key={label}
+                  className="absolute flex flex-col"
+                  style={{
+                    top:
+                      MOBILE_DOW_HEADER_HEIGHT +
+                      col * (mobileCellSize + CELL_GAP),
+                  }}
+                >
+                  <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                    {label}
+                  </span>
+                  {climate && (
+                    <span className="text-[10px] text-slate-400 dark:text-slate-500 whitespace-nowrap">
+                      {climate.highF}°/{climate.lowF}°
+                      {isSmokeMonth && (
+                        <span className="text-orange-400 dark:text-orange-500 ml-0.5" title="Wildfire smoke risk season">
+                          *
+                        </span>
+                      )}
+                    </span>
+                  )}
+                </div>
+              );
+            })}
           </div>
 
-          {/* Grid area */}
-          <div className="flex-1">
-            {/* Month labels row (month name + temp + smoke risk) */}
-            <div className="relative" style={{ height: cellSize + CELL_GAP + 20 }}>
-              {monthLabels.map(({ col, label, month }) => {
-                const climate = MONTHLY_CLIMATE[month];
-                const isSmokeMonth = (SMOKE_RISK_MONTHS as readonly number[]).includes(month);
-                return (
-                  <div
-                    key={label}
-                    className="absolute flex flex-col"
-                    style={{ left: col * (cellSize + CELL_GAP) }}
-                  >
-                    <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
-                      {label}
-                    </span>
-                    {climate && (
-                      <span className="text-[10px] text-slate-400 dark:text-slate-500 whitespace-nowrap">
-                        {climate.highF}°/{climate.lowF}°
-                        {isSmokeMonth && (
-                          <span className="text-orange-400 dark:text-orange-500 ml-0.5" title="Wildfire smoke risk season">
-                            *
-                          </span>
-                        )}
-                      </span>
-                    )}
-                  </div>
-                );
-              })}
+          <div>
+            {/* Day-of-week labels row (across the top) */}
+            <div className="flex" style={{ height: MOBILE_DOW_HEADER_HEIGHT }}>
+              {DAY_LABELS.map((label) => (
+                <div
+                  key={label}
+                  className="text-[10px] text-slate-500 dark:text-slate-400 text-center"
+                  style={{ width: mobileCellSize + CELL_GAP }}
+                >
+                  {label}
+                </div>
+              ))}
             </div>
 
-            {/* Cell grid (positioned absolutely within a relative container) */}
+            {/* Transposed cell grid: weeks flow vertically */}
             <div
               className="relative"
-              style={{ width: gridWidth, height: gridHeight }}
+              style={{ width: mobileGridWidth, height: mobileGridHeight }}
             >
-              {cells.map((cell) => {
-                const hasScore = cell.score !== undefined;
-                const color = hasScore
-                  ? scoreToColor(cell.score!)
-                  : EMPTY_COLOR;
-                const today = isToday(cell.date);
-                const inHighlight = isInRange(cell.dateStr, highlightRange);
-                const hasSelection = highlightRange !== null;
-
-                return (
-                  <div
-                    key={cell.dateStr}
-                    role="button"
-                    tabIndex={0}
-                    aria-label={`${format(cell.date, "MMM d, yyyy")}${hasScore ? ` — score ${cell.score!.toFixed(1)}` : ""}`}
-                    className={[
-                      "absolute cursor-pointer rounded-sm transition-opacity flex items-center justify-center",
-                      today
-                        ? "ring-2 ring-slate-800 dark:ring-slate-200"
-                        : "",
-                      inHighlight
-                        ? "ring-2 ring-blue-500 dark:ring-blue-400"
-                        : "",
-                      hasSelection && !inHighlight ? "opacity-40" : "",
-                    ]
-                      .filter(Boolean)
-                      .join(" ")}
-                    style={{
-                      width: cellSize,
-                      height: cellSize,
-                      left: cell.col * (cellSize + CELL_GAP),
-                      top: cell.row * (cellSize + CELL_GAP),
-                      backgroundColor: color,
-                    }}
-                    onClick={() => handleCellClick(cell.dateStr)}
-                    onMouseEnter={(e) =>
-                      handleCellHover(cell.dateStr, cell.score, e)
-                    }
-                    onMouseMove={(e) => {
-                      if (tooltip) {
-                        setTooltip((prev) =>
-                          prev
-                            ? {
-                                ...prev,
-                                position: { x: e.clientX, y: e.clientY },
-                              }
-                            : null
-                        );
-                      }
-                    }}
-                    onMouseLeave={handleCellLeave}
-                    onKeyDown={(e) => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        handleCellClick(cell.dateStr);
-                      }
-                    }}
-                  >
-                    {cell.isFirefall ? (
-                      <svg
-                        viewBox="0 0 24 24"
-                        fill="black"
-                        className="select-none"
-                        style={{
-                          width: Math.max(7, cellSize * 0.55),
-                          height: Math.max(7, cellSize * 0.55),
-                        }}
-                      >
-                        <path d="M12 23c-3.9 0-7-2.9-7-6.8 0-3.2 2.1-6.2 4.3-8.4.3-.3.8-.1.8.4 0 1.2.5 2.3 1.3 3 .1.1.3 0 .3-.2-.2-2.5.7-5.1 2.6-7 .3-.3.8-.1.8.3.3 3.1 2.5 5.5 4.2 7.6 1.1 1.3 1.7 3 1.7 4.6C21 20.1 17.9 23 12 23z" />
-                      </svg>
-                    ) : cell.isHoliday ? (
-                      <span
-                        className="leading-none text-white select-none"
-                        style={{
-                          fontSize: Math.max(5, cellSize * 0.35),
-                          textShadow: "0 0 2px rgba(0,0,0,0.5)",
-                        }}
-                      >
-                        ●
-                      </span>
-                    ) : null}
-                  </div>
-                );
-              })}
+              {cells.map((cell) =>
+                renderCell(
+                  cell,
+                  mobileCellSize,
+                  cell.row * (mobileCellSize + CELL_GAP),
+                  cell.col * (mobileCellSize + CELL_GAP)
+                )
+              )}
             </div>
           </div>
         </div>
-      </div>
+      ) : (
+        /* Scrollable wrapper (for very narrow screens) */
+        <div className="overflow-x-auto">
+          <div
+            style={{
+              display: "inline-flex",
+              minWidth: gridWidth + DAY_LABEL_WIDTH + 8,
+            }}
+          >
+            {/* Day-of-week labels column */}
+            <div
+              className="flex flex-col shrink-0"
+              style={{
+                width: DAY_LABEL_WIDTH,
+                paddingTop: cellSize + CELL_GAP + 20, // offset for month labels + temps row
+              }}
+            >
+              {DAY_LABELS.map((label, i) => (
+                <div
+                  key={i}
+                  className="flex items-center text-xs text-slate-500 dark:text-slate-400"
+                  style={{ height: cellSize + CELL_GAP }}
+                >
+                  {label}
+                </div>
+              ))}
+            </div>
+
+            {/* Grid area */}
+            <div className="flex-1">
+              {/* Month labels row (month name + temp + smoke risk) */}
+              <div className="relative" style={{ height: cellSize + CELL_GAP + 20 }}>
+                {monthLabels.map(({ col, label, month }) => {
+                  const climate = MONTHLY_CLIMATE[month];
+                  const isSmokeMonth = (SMOKE_RISK_MONTHS as readonly number[]).includes(month);
+                  return (
+                    <div
+                      key={label}
+                      className="absolute flex flex-col"
+                      style={{ left: col * (cellSize + CELL_GAP) }}
+                    >
+                      <span className="text-xs font-medium text-slate-500 dark:text-slate-400">
+                        {label}
+                      </span>
+                      {climate && (
+                        <span className="text-[10px] text-slate-400 dark:text-slate-500 whitespace-nowrap">
+                          {climate.highF}°/{climate.lowF}°
+                          {isSmokeMonth && (
+                            <span className="text-orange-400 dark:text-orange-500 ml-0.5" title="Wildfire smoke risk season">
+                              *
+                            </span>
+                          )}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Cell grid (positioned absolutely within a relative container) */}
+              <div
+                className="relative"
+                style={{ width: gridWidth, height: gridHeight }}
+              >
+                {cells.map((cell) =>
+                  renderCell(
+                    cell,
+                    cellSize,
+                    cell.col * (cellSize + CELL_GAP),
+                    cell.row * (cellSize + CELL_GAP)
+                  )
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Tooltip */}
       {tooltip && (

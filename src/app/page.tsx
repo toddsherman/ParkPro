@@ -13,7 +13,7 @@ import { fetchWeekWeather } from "@/lib/api/weather";
 import { YOSEMITE_CENTER } from "@/lib/constants";
 import { DateRange } from "@/lib/types";
 import { Mountain, TreePine } from "lucide-react";
-import DataMethodology from "@/components/DataMethodology";
+import DataMethodology, { MethodologyLink } from "@/components/DataMethodology";
 
 export default function Home() {
   const {
@@ -113,7 +113,7 @@ export default function Home() {
       <main className="flex-1 flex flex-col pt-[92px]">
         <div className="flex flex-col px-4 py-6 sm:px-6 lg:px-10 lg:py-8">
           {/* Year selector */}
-          <div className="flex items-center justify-between mb-6">
+          <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
             <div>
               <h1 className="text-xl sm:text-2xl font-bold text-slate-800 dark:text-slate-100">
                 Yosemite Crowd Calendar
@@ -134,9 +134,9 @@ export default function Home() {
           />
 
           {/* Legend + methodology link */}
-          <div className="mt-4 flex items-end justify-between">
+          <div className="mt-4 flex items-end justify-between gap-3">
             <HeatmapLegend />
-            <DataMethodology />
+            <MethodologyLink />
           </div>
 
           {/* Range detail section (below calendar) */}
@@ -169,12 +169,15 @@ export default function Home() {
               </div>
             </div>
           )}
+
+          {/* Data sources & methodology (permanent bottom section) */}
+          <DataMethodology />
         </div>
       </main>
 
       {/* Error banner */}
       {state.error && (
-        <div className="fixed top-18 left-1/2 -translate-x-1/2 z-50 max-w-md w-full mx-4 fade-in">
+        <div className="fixed top-18 left-1/2 -translate-x-1/2 z-50 w-[calc(100%-2rem)] max-w-md fade-in">
           <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-800 shadow-lg">
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-red-800 dark:text-red-200">
