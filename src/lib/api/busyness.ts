@@ -1,5 +1,6 @@
 import type { DailyCrowdData } from "../types";
 import { generateWeekCrowdData } from "../utils/scoring";
+import { apiUrl } from "./url";
 
 /**
  * Fetch daily crowd / busyness data for a specific zone via our internal API route.
@@ -11,7 +12,7 @@ export async function fetchZoneBusyness(
 ): Promise<DailyCrowdData[]> {
   try {
     const params = new URLSearchParams({ zoneId, startDate });
-    const res = await fetch(`/api/busyness?${params}`);
+    const res = await fetch(apiUrl(`/api/busyness?${params}`));
 
     if (!res.ok) {
       throw new Error(`Busyness API returned ${res.status}`);

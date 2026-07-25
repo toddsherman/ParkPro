@@ -1,4 +1,5 @@
 import type { CampsiteAvailability } from "../types";
+import { apiUrl } from "./url";
 
 /**
  * Fetch campsite availability for a given facility and start date
@@ -11,7 +12,7 @@ export async function fetchCampsiteAvailability(
 ): Promise<CampsiteAvailability[]> {
   try {
     const params = new URLSearchParams({ facilityId, startDate });
-    const res = await fetch(`/api/availability?${params}`);
+    const res = await fetch(apiUrl(`/api/availability?${params}`));
 
     if (!res.ok) {
       throw new Error(`Availability API returned ${res.status}`);

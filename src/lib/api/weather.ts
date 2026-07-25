@@ -1,4 +1,5 @@
 import type { DailyForecast } from "../types";
+import { apiUrl } from "./url";
 
 const DAY_NAMES = [
   "Sunday",
@@ -96,7 +97,7 @@ export async function fetchWeekWeather(
       startDate,
     });
 
-    const res = await fetch(`/api/weather?${params}`);
+    const res = await fetch(apiUrl(`/api/weather?${params}`));
 
     if (!res.ok) {
       throw new Error(`Weather API returned ${res.status}`);

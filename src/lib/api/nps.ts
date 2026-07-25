@@ -1,4 +1,5 @@
 import type { ParkAlert } from "../types";
+import { apiUrl } from "./url";
 
 /**
  * Fetch current park alerts for Yosemite via our internal API route.
@@ -6,7 +7,7 @@ import type { ParkAlert } from "../types";
  */
 export async function fetchParkAlerts(): Promise<ParkAlert[]> {
   try {
-    const res = await fetch("/api/alerts");
+    const res = await fetch(apiUrl("/api/alerts"));
 
     if (!res.ok) {
       throw new Error(`Alerts API returned ${res.status}`);
