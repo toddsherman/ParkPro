@@ -96,7 +96,7 @@ export default function Home() {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Header />
-        <div className="flex-1 flex items-center justify-center pt-14">
+        <div className="flex-1 flex items-center justify-center pt-[92px]">
           <div className="flex flex-col items-center gap-3 text-slate-400">
             <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
             <p className="text-sm">Computing park data...</p>
@@ -110,7 +110,7 @@ export default function Home() {
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
 
-      <main className="flex-1 flex flex-col pt-14">
+      <main className="flex-1 flex flex-col pt-[92px]">
         <div className="flex flex-col px-4 py-6 sm:px-6 lg:px-10 lg:py-8">
           {/* Year selector */}
           <div className="flex items-center justify-between mb-6">

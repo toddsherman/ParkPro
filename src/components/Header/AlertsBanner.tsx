@@ -39,7 +39,7 @@ export default function AlertsBanner({ onClose }: AlertsBannerProps) {
   if (state.alerts.length === 0) return null;
 
   return (
-    <div className="fixed top-14 left-0 right-0 z-40 bg-gray-900/95 backdrop-blur-md border-b border-gray-700/50 max-h-64 overflow-y-auto">
+    <div className="fixed top-[92px] left-0 right-0 z-40 bg-gray-900/95 backdrop-blur-md border-b border-gray-700/50 max-h-64 overflow-y-auto">
       <div className="max-w-screen-2xl mx-auto px-4 py-3">
         {/* Header row with close button */}
         <div className="flex items-center justify-between mb-2">
