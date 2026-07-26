@@ -4,7 +4,7 @@ import BackBar from "@/components/BackBar";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "ParkPro - Yosemite Trip Planner",
+  title: "ParkPro — Yosemite Trip Planner",
   description:
     "Plan your perfect Yosemite visit with real-time crowd, weather, and trail data",
 };
