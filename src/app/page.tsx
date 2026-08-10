@@ -2,7 +2,6 @@
 
 import React, { useEffect, useMemo } from "react";
 import { useApp } from "@/lib/context";
-import Header from "@/components/Header/Header";
 import CalendarHeatmap from "@/components/Calendar/CalendarHeatmap";
 import HeatmapLegend from "@/components/Calendar/HeatmapLegend";
 import YearSelector from "@/components/Calendar/YearSelector";
@@ -95,8 +94,7 @@ export default function Home() {
   if (!yearScores) {
     return (
       <div className="min-h-screen flex flex-col bg-background">
-        <Header />
-        <div className="flex-1 flex items-center justify-center pt-[96px]">
+        <div className="flex-1 flex items-center justify-center pt-10">
           <div className="flex flex-col items-center gap-3 text-slate-400">
             <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
             <p className="text-sm">Computing park data...</p>
@@ -108,9 +106,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
-      <Header />
-
-      <main className="flex-1 flex flex-col pt-[96px]">
+      <main className="flex-1 flex flex-col pt-10">
         <div className="flex flex-col px-4 py-6 sm:px-6 lg:px-10 lg:py-8">
           {/* Year selector */}
           <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
