@@ -13,18 +13,18 @@ export default function Header() {
 
   return (
     <>
-      <header className="fixed top-9 left-0 right-0 z-50 h-14 bg-gray-900/90 backdrop-blur-md border-b border-gray-700/50">
+      <header className="fixed top-10 left-0 right-0 z-50 h-14 bg-stone-50/95 backdrop-blur-md border-b border-stone-200">
         <div className="h-full max-w-screen-2xl mx-auto px-4 flex items-center justify-between">
           {/* Logo / Brand */}
           <div className="flex items-center gap-2.5">
-            <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-600/90">
-              <Mountain className="w-5 h-5 text-white" />
+            <div className="flex items-center justify-center w-8 h-8 rounded-sm bg-blue-600">
+              <Mountain className="w-5 h-5 text-stone-50" />
             </div>
             <div className="flex flex-col leading-tight">
-              <span className="text-white font-bold text-lg tracking-tight">
+              <span className="text-stone-900 font-bold text-lg tracking-tight">
                 ParkPro
               </span>
-              <span className="text-gray-400 text-[10px] -mt-0.5 hidden sm:block">
+              <span className="text-stone-500 text-[10px] -mt-0.5 hidden sm:block font-sans uppercase tracking-[0.08em]">
                 Yosemite Trip Planner
               </span>
             </div>
@@ -34,7 +34,7 @@ export default function Header() {
           {alertCount > 0 && (
             <button
               onClick={() => setShowAlerts((prev) => !prev)}
-              className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-gray-800 hover:bg-gray-700 transition-colors text-gray-300 hover:text-white"
+              className="relative flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-stone-100 hover:bg-stone-200 transition-colors text-stone-700 hover:text-stone-900"
               aria-label={`${alertCount} park alerts`}
             >
               <Bell className="w-4 h-4" />

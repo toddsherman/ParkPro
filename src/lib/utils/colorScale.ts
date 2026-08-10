@@ -1,24 +1,24 @@
 /**
  * Convert a busyness score (0-10) to a hex colour on a
- * snow-white → slate → yellow → orange → red gradient.
+ * paper → stone → ochre → signal red → ink gradient.
  *
  * Stops:
- *  0 → #f1f5f9  (slate-100 / near-white, "snow")
- *  3 → #94a3b8  (slate-400 / cool gray)
- *  5 → #eab308  (yellow)
- *  7 → #f97316  (orange)
- * 10 → #dc2626  (red)
+ *  0 → #f4f1ea  (paper)
+ *  3 → #c9c2b6  (light stone)
+ *  5 → #b58a43  (muted ochre)
+ *  7 → #b64832  (signal red)
+ * 10 → #1d1c19  (ink)
  */
 export function scoreToColor(score: number): string {
   const s = Math.max(0, Math.min(10, score));
 
   // Define colour stops as [score, r, g, b]
   const stops: [number, number, number, number][] = [
-    [0, 0xf1, 0xf5, 0xf9],
-    [3, 0x94, 0xa3, 0xb8],
-    [5, 0xea, 0xb3, 0x08],
-    [7, 0xf9, 0x73, 0x16],
-    [10, 0xdc, 0x26, 0x26],
+    [0, 0xf4, 0xf1, 0xea],
+    [3, 0xc9, 0xc2, 0xb6],
+    [5, 0xb5, 0x8a, 0x43],
+    [7, 0xb6, 0x48, 0x32],
+    [10, 0x1d, 0x1c, 0x19],
   ];
 
   // Find the two stops surrounding our score
@@ -48,4 +48,4 @@ function hex(n: number): string {
 }
 
 /** Background colour for cells with no data */
-export const EMPTY_COLOR = "#ebedf0";
+export const EMPTY_COLOR = "#e9e4d9";

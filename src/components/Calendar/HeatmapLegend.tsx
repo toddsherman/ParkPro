@@ -20,7 +20,7 @@ export default function HeatmapLegend() {
           className="h-3 flex-1 rounded-sm"
           style={{
             background:
-              "linear-gradient(to right, #f1f5f9, #94a3b8, #eab308, #f97316, #dc2626)",
+              "linear-gradient(to right, #f4f1ea, #c9c2b6, #b58a43, #b64832, #1d1c19)",
           }}
         />
         <span className="text-xs text-slate-500 dark:text-slate-400">

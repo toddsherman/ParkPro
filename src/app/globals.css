@@ -1,50 +1,51 @@
 @import "tailwindcss";
+@custom-variant dark (&:where(.dark, .dark *));
 
 /* ============================================================
-   ParkPro - Nature-themed Design Tokens
+   ParkPro - todd.sh Project Design Tokens
    ============================================================ */
 
 :root {
   /* Core backgrounds & foregrounds */
-  --background: #f8faf7;
-  --foreground: #1e293b;
+  --background: #f4f1ea;
+  --foreground: #1d1c19;
 
   /* Nature palette */
-  --green-50: #f0fdf4;
-  --green-100: #dcfce7;
-  --green-200: #bbf7d0;
-  --green-400: #4ade80;
-  --green-500: #22c55e;
-  --green-600: #16a34a;
-  --green-700: #15803d;
-  --green-800: #166534;
-  --green-900: #14532d;
+  --green-50: #f4f1ea;
+  --green-100: #e9e4d9;
+  --green-200: #d4cec2;
+  --green-400: #8d887e;
+  --green-500: #b58a43;
+  --green-600: #31566b;
+  --green-700: #274656;
+  --green-800: #1d1c19;
+  --green-900: #1d1c19;
 
   /* Earth tones */
-  --brown-50: #fdf8f0;
-  --brown-100: #f5ead6;
-  --brown-200: #e8d5b0;
-  --brown-400: #c4924a;
-  --brown-600: #92400e;
-  --brown-700: #78350f;
-  --brown-800: #5c2d0e;
+  --brown-50: #f4f1ea;
+  --brown-100: #e9e4d9;
+  --brown-200: #d4cec2;
+  --brown-400: #b58a43;
+  --brown-600: #b64832;
+  --brown-700: #8d3828;
+  --brown-800: #1d1c19;
 
   /* Slate (UI chrome) */
-  --slate-50: #f8fafc;
-  --slate-100: #f1f5f9;
-  --slate-200: #e2e8f0;
-  --slate-300: #cbd5e1;
-  --slate-400: #94a3b8;
-  --slate-500: #64748b;
-  --slate-600: #475569;
-  --slate-700: #334155;
-  --slate-800: #1e293b;
-  --slate-900: #0f172a;
-  --slate-950: #020617;
+  --slate-50: #f8f6f1;
+  --slate-100: #f4f1ea;
+  --slate-200: #e9e4d9;
+  --slate-300: #d4cec2;
+  --slate-400: #8d887e;
+  --slate-500: #625f58;
+  --slate-600: #4b4943;
+  --slate-700: #34332f;
+  --slate-800: #292824;
+  --slate-900: #1d1c19;
+  --slate-950: #141310;
 
   /* Panel */
-  --panel-bg: rgba(255, 255, 255, 0.95);
-  --panel-border: rgba(0, 0, 0, 0.08);
+  --panel-bg: rgba(248, 246, 241, 0.96);
+  --panel-border: #d4cec2;
 
   /* Accent */
   --accent: var(--green-600);
@@ -60,28 +61,6 @@
     0 8px 10px -6px rgba(0, 0, 0, 0.1);
 }
 
-/* Dark mode */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0c1210;
-    --foreground: #e2e8f0;
-
-    --panel-bg: rgba(15, 23, 42, 0.95);
-    --panel-border: rgba(255, 255, 255, 0.08);
-
-    --accent: var(--green-500);
-    --accent-hover: var(--green-400);
-
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4),
-      0 2px 4px -2px rgba(0, 0, 0, 0.3);
-    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4),
-      0 4px 6px -4px rgba(0, 0, 0, 0.3);
-    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5),
-      0 8px 10px -6px rgba(0, 0, 0, 0.4);
-  }
-}
-
 /* ============================================================
    Tailwind Theme Integration
    ============================================================ */
@@ -95,6 +74,75 @@
   --color-panel-border: var(--panel-border);
   --font-sans: Georgia, serif;
   --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --color-stone-50: #f4f1ea;
+  --color-stone-100: #e9e4d9;
+  --color-stone-200: #d4cec2;
+  --color-stone-500: #8d887e;
+  --color-stone-700: #4b4943;
+  --color-stone-900: #1d1c19;
+  --color-gray-50: #f4f1ea;
+  --color-gray-100: #e9e4d9;
+  --color-gray-200: #d4cec2;
+  --color-gray-300: #b9b3a8;
+  --color-gray-400: #8d887e;
+  --color-gray-500: #625f58;
+  --color-gray-600: #4b4943;
+  --color-gray-700: #34332f;
+  --color-gray-800: #292824;
+  --color-gray-900: #1d1c19;
+  --color-gray-950: #141310;
+  --color-slate-50: #f8f6f1;
+  --color-slate-100: #f4f1ea;
+  --color-slate-200: #e9e4d9;
+  --color-slate-300: #d4cec2;
+  --color-slate-400: #8d887e;
+  --color-slate-500: #625f58;
+  --color-slate-600: #4b4943;
+  --color-slate-700: #34332f;
+  --color-slate-800: #292824;
+  --color-slate-900: #1d1c19;
+  --color-emerald-50: #f4f1ea;
+  --color-emerald-100: #e9e4d9;
+  --color-emerald-200: #d4cec2;
+  --color-emerald-400: #56778a;
+  --color-emerald-500: #31566b;
+  --color-emerald-600: #31566b;
+  --color-emerald-700: #274656;
+  --color-green-50: #f4f1ea;
+  --color-green-100: #e9e4d9;
+  --color-green-200: #d4cec2;
+  --color-green-400: #b58a43;
+  --color-green-500: #b58a43;
+  --color-green-600: #31566b;
+  --color-green-700: #274656;
+  --color-yellow-50: #f4f1ea;
+  --color-yellow-100: #efe5cf;
+  --color-yellow-200: #dcc596;
+  --color-yellow-400: #b58a43;
+  --color-yellow-500: #b58a43;
+  --color-yellow-600: #8d6b34;
+  --color-orange-50: #f4f1ea;
+  --color-orange-100: #ead4cc;
+  --color-orange-200: #dba99b;
+  --color-orange-400: #b64832;
+  --color-orange-500: #b64832;
+  --color-orange-600: #913a28;
+  --color-red-50: #f7eeeb;
+  --color-red-100: #ead4cc;
+  --color-red-200: #dba99b;
+  --color-red-400: #c56a55;
+  --color-red-500: #b64832;
+  --color-red-600: #913a28;
+  --color-red-700: #743022;
+  --color-red-800: #5f291f;
+  --color-red-900: #48231c;
+  --color-blue-50: #edf1f2;
+  --color-blue-100: #d8e1e5;
+  --color-blue-200: #afc3cc;
+  --color-blue-400: #56778a;
+  --color-blue-500: #41677a;
+  --color-blue-600: #31566b;
+  --color-blue-700: #274656;
 }
 
 /* ============================================================
@@ -111,6 +159,7 @@ body {
   font-family: Georgia, serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  background-image: radial-gradient(circle at 88% 4%, rgb(49 86 107 / 0.07), transparent 28rem);
 }
 
 /* ============================================================
@@ -119,7 +168,7 @@ body {
 
 * {
   scrollbar-width: thin;
-  scrollbar-color: var(--green-600) transparent;
+  scrollbar-color: var(--accent) transparent;
 }
 
 *::-webkit-scrollbar {
@@ -132,12 +181,17 @@ body {
 }
 
 *::-webkit-scrollbar-thumb {
-  background-color: var(--green-600);
+  background-color: var(--accent);
   border-radius: 3px;
 }
 
 *::-webkit-scrollbar-thumb:hover {
-  background-color: var(--green-700);
+  background-color: var(--accent-hover);
+}
+
+::selection {
+  background: #b64832;
+  color: #f4f1ea;
 }
 
 /* ============================================================

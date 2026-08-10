@@ -8,16 +8,14 @@ describe("scoreToColor", () => {
     }
   });
 
-  it("returns near-white slate for score 0", () => {
+  it("returns paper for score 0", () => {
     const color = scoreToColor(0);
-    // Should be #f1f5f9 (slate-100, snow-white)
-    expect(color).toBe("#f1f5f9");
+    expect(color).toBe("#f4f1ea");
   });
 
-  it("returns red-ish for score 10", () => {
+  it("returns ink for score 10", () => {
     const color = scoreToColor(10);
-    // Should be #dc2626 (red)
-    expect(color).toBe("#dc2626");
+    expect(color).toBe("#1d1c19");
   });
 
   it("clamps values below 0", () => {

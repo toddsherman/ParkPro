@@ -96,7 +96,7 @@ export default function Home() {
     return (
       <div className="min-h-screen flex flex-col bg-background">
         <Header />
-        <div className="flex-1 flex items-center justify-center pt-[92px]">
+        <div className="flex-1 flex items-center justify-center pt-[96px]">
           <div className="flex flex-col items-center gap-3 text-slate-400">
             <div className="w-8 h-8 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin" />
             <p className="text-sm">Computing park data...</p>
@@ -110,7 +110,7 @@ export default function Home() {
     <div className="min-h-screen flex flex-col bg-background">
       <Header />
 
-      <main className="flex-1 flex flex-col pt-[92px]">
+      <main className="flex-1 flex flex-col pt-[96px]">
         <div className="flex flex-col px-4 py-6 sm:px-6 lg:px-10 lg:py-8">
           {/* Year selector */}
           <div className="flex flex-wrap items-center justify-between gap-3 mb-6">
@@ -160,9 +160,9 @@ export default function Home() {
                 <h2 className="text-lg font-bold text-slate-800 dark:text-slate-100">
                   Plan Your Yosemite Visit
                 </h2>
-                <p className="text-sm text-slate-500 dark:text-slate-400 mt-2 leading-relaxed">
+                <p className="text-sm text-slate-500 mt-2 leading-relaxed">
                   The calendar above shows predicted crowd levels throughout the
-                  year. Green days are quieter, red days are busier. Click a
+                  year. Pale days are quieter; red and ink days are busier. Click a
                   start date and an end date to see detailed zone-by-zone
                   breakdown and trip recommendations.
                 </p>
