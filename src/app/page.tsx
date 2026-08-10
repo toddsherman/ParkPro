@@ -158,7 +158,7 @@ export default function Home() {
                 </h2>
                 <p className="text-sm text-slate-500 mt-2 leading-relaxed">
                   The calendar above shows predicted crowd levels throughout the
-                  year. Pale days are quieter; red and ink days are busier. Click a
+                  year. Lighter days are quieter; darker days are busier. Click a
                   start date and an end date to see detailed zone-by-zone
                   breakdown and trip recommendations.
                 </p>
