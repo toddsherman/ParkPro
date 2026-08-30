@@ -32,6 +32,9 @@ export default function RootLayout({
              hashed script path 404s — the generic path works on both origins. */
           scriptSrc="/_vercel/insights/script.js"
           endpoint="/_vercel/insights"
+          viewEndpoint="/_vercel/insights/view"
+          eventEndpoint="/_vercel/insights/event"
+          sessionEndpoint="/_vercel/insights/session"
         />
       </body>
     </html>
