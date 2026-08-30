@@ -27,7 +27,12 @@ export default function RootLayout({
       <body className="antialiased">
         <BackBar />
         <AppProvider>{children}</AppProvider>
-        <Analytics />
+        <Analytics
+          /* Served through the todd.sh proxy, where the default per-project
+             hashed script path 404s — the generic path works on both origins. */
+          scriptSrc="/_vercel/insights/script.js"
+          endpoint="/_vercel/insights"
+        />
       </body>
     </html>
   );
