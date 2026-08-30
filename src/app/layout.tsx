@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { AppProvider } from "@/lib/context";
 import BackBar from "@/components/BackBar";
 import "./globals.css";
+import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
   title: "ParkPro — Yosemite Trip Planner",
@@ -26,6 +27,7 @@ export default function RootLayout({
       <body className="antialiased">
         <BackBar />
         <AppProvider>{children}</AppProvider>
+        <Analytics />
       </body>
     </html>
   );
