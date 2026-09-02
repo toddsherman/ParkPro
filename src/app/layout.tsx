@@ -5,7 +5,7 @@ import "./globals.css";
 import { Analytics } from "@vercel/analytics/next";
 
 export const metadata: Metadata = {
-  title: "ParkPro — Yosemite Trip Planner",
+  title: "Yosemite Crowd Calendar",
   description:
     "Plan your perfect Yosemite visit with real-time crowd, weather, and trail data",
 };
